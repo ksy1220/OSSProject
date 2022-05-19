@@ -62,7 +62,20 @@ class MainScene extends Phaser.Scene {
     gameOver() {
         this.physics.pause();
         this.isGameOver = true;
+<<<<<<< Updated upstream
         this.scene.launch('score');
+=======
+        this.gameOverText.visible = true;
+        localStorage.setItem("dinoScore", JSON.stringify(this.bestScore));
+    }
+
+    replay() {
+        location.reload();
+    }
+
+    toMain() {
+        location.href = 'https://ksy1220.github.io/OSSProject/';
+>>>>>>> Stashed changes
     }
 
     update() {
