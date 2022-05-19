@@ -4,7 +4,8 @@ class MainScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('player', 'player.png');
+        this.load.image('player1', 'player1.png');
+        this.load.image('player2', 'player2.png');
         this.load.image('enemy', 'enemy.png');
         this.load.image('ground', 'ground.png');
     }
@@ -13,17 +14,34 @@ class MainScene extends Phaser.Scene {
         this.frame = 0;
         this.score = 0;
         this.scoreText;
+        this.bestScore = 0;
+        this.bestScoreText;
         this.isGameOver = false;
         this.isJumping = false;
         this.enemySpeed = 6;
         this.speedFlag = true;
 
+        let temp = localStorage.getItem("dinoScore");
+        if (temp) {
+            this.bestScore = JSON.parse(temp);
+        }
+
+        this.anims.create({
+            key: 'playerRun',
+            frames: [
+                { key: 'player1' },
+                { key: 'player2' }
+            ],
+            frameRate: 8,
+            repeat: -1
+        });
+
         this.ground = this.physics.add.staticSprite(700, 400, 'ground');
 
-        this.player = this.physics.add.sprite(180, 300, 'player');
+        this.player = this.physics.add.sprite(180, 300, 'player1').play('playerRun');
         this.playerWidth = this.player.width;
         this.playerHeight = this.player.height;
-        this.player.body.setSize(this.playerWidth * 0.8, this.playerHeight * 0.8);
+        this.player.body.setSize(this.playerWidth * 0.7, this.playerHeight * 0.8);
 
 
         this.enemies = this.physics.add.group();
@@ -38,7 +56,23 @@ class MainScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.enemies, this.gameOver, null, this);
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.scoreText = this.add.text(16, 16, 'score: 0', { font: '32px Arial', fill: '#000' });
+        this.scoreText = this.add.text(16, 16, 'Score: 0', { font: '24px Times New Roman', fill: '#000' });
+        this.bestScoreText = this.add.text(140, 16, `Best Score: ${this.bestScore}`, { font: '24px Times New Roman', fill: '#000' });
+
+        this.gameOverText = this.add.text(350, 120, 'Game Over!',
+            {
+                font: '32px Times New Roman',
+                fill: '#000',
+                backgroundColor: '#ffffff',
+                padding: 50,
+            });
+        
+        this.tipText = this.add.text(800, 20, '점프: 스페이스바', { font: '20px Times New Roman', fill: '#000' });
+
+        document.getElementById("btnReplay").onclick = this.replay;
+        document.getElementById("btnToMain").onclick = this.toMain;
+
+        this.gameOverText.visible = false;
     }
 
     moveEnemy(enemy, speed) {
@@ -49,7 +83,7 @@ class MainScene extends Phaser.Scene {
     }
 
     resetEnemy(enemy) {
-        enemy.x = Phaser.Math.Between(1200, 1400);
+        enemy.x = Phaser.Math.Between(1250, 1400);
         enemy.y = 300;
         if (Phaser.Math.Between(0, 1) == 1) {
             enemy.flipX = true;
@@ -61,10 +95,8 @@ class MainScene extends Phaser.Scene {
 
     gameOver() {
         this.physics.pause();
+        this.player.anims.stop();
         this.isGameOver = true;
-<<<<<<< Updated upstream
-        this.scene.launch('score');
-=======
         this.gameOverText.visible = true;
         localStorage.setItem("dinoScore", JSON.stringify(this.bestScore));
     }
@@ -75,25 +107,24 @@ class MainScene extends Phaser.Scene {
 
     toMain() {
         location.href = 'https://ksy1220.github.io/OSSProject/';
->>>>>>> Stashed changes
     }
 
     update() {
         if (this.isGameOver) return;
+
+        if (this.isJumping) {
+            this.player.anims.stop();
+        }
+        else {
+            this.player.anims.play('playerRun', true);
+        }
 
         this.frame++;
         this.enemies.getChildren().forEach(enemy => {
             this.moveEnemy(enemy, this.enemySpeed);
         });
 
-        if (this.cursors.down.isDown) {
-            this.player.setDisplaySize(this.playerWidth, this.playerHeight / 2);
-        }
-        else {
-            this.player.setDisplaySize(this.playerWidth, this.playerHeight);
-        }
-
-        if (!this.isJumping && this.cursors.up.isDown) {
+        if (!this.isJumping && this.cursors.space.isDown) {
             this.player.setVelocityY(-600);
             this.isJumping = true;
         }
@@ -102,6 +133,9 @@ class MainScene extends Phaser.Scene {
             this.frame = 0;
             this.score++;
             this.scoreText.setText('Score: ' + this.score);
+            if (this.score >= this.bestScore)
+                this.bestScore = this.score;
+                this.bestScoreText.setText('Best Score: ' + this.bestScore);
         }
 
         if (this.speedFlag == false && this.score % 30 == 0) {
