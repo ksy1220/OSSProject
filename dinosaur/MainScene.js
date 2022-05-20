@@ -70,7 +70,7 @@ class MainScene extends Phaser.Scene {
         this.tipText = this.add.text(800, 20, '점프: 스페이스바', { font: '20px Times New Roman', fill: '#000' });
 
         document.getElementById("btnReplay").onclick = this.replay;
-        document.getElementById("btnToMain").onclick = this.toMain;
+        document.getElementById("btnToHome").onclick = this.toHome;
 
         this.gameOverText.visible = false;
     }
@@ -105,7 +105,7 @@ class MainScene extends Phaser.Scene {
         location.reload();
     }
 
-    toMain() {
+    toHome() {
         location.href = 'https://ksy1220.github.io/OSSProject/';
     }
 
