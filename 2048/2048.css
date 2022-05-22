@@ -1,0 +1,39 @@
+body{
+    background: #FAF8EF;
+}
+
+table{
+    border-collapse: separate;
+    background: #BBADA0;
+    margin-left: 100px;
+    border-radius: 10px;
+    padding: 10px;
+    border-spacing: 4px;
+}
+
+td{
+    background: #cdc1b4;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    border: 0px solid white;
+    padding: 10px;
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+tr #title2{
+    background-color: #FAF8EF
+}
+
+#name, #score{
+    background: #FAF8EF;
+    width: 223px;
+    color: #776e65;
+}
+
+#title{
+    background: #faf8ef;
+    margin-left: 80px;
+}
